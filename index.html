@@ -1,29 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
     <main>
-        <!-- Numbers of floor and lifts counts -->
-        <section class="floor_lift_count_section">
-            <form id="floor_lift_count_form">
-                <label for="floor_count">Numbers of Floor</label>
-                <input id="floor_count" type="number" />
-                <label for="lift_count">Numbers of Lifts</label>
-                <input id="lift_count" type="number" />
-                <button type="submit" id="floor_lift_submit_btn">Generate Similation</button>
-            </form>
+      <!-- Numbers of floor and lifts counts -->
+      <section class="floor_lift_count_section">
+        <form id="floor_lift_count_form">
+          <label for="floor_count">Numbers of Floor</label>
+          <input id="floor_count" type="number" />
+          <label for="lift_count">Numbers of Lifts</label>
+          <input id="lift_count" type="number" />
+          <button type="submit" id="floor_lift_submit_btn">
+            Generate Similation
+          </button>
+        </form>
+      </section>
+      <!-- Lift Simulation section -->
+      <section class="floor_lift_playground">
+        <div class="floor_container_warp">
+          <!-- <section class="floor_container">
+            <div class="floor_switch_controls">
+              <button class="up_btn">UP</button>
+              <div>1</div>
+              <button class="down_btn">down</button>
+            </div>
+          </section>
+          <section class="floor_container">
+            <div class="floor_switch_controls">
+              <button class="up_btn">UP</button>
+              <div>2</div>
+              <button class="down_btn">down</button>
+            </div>
+          </section>
+          <section class="floor_container">
+            <div class="floor_switch_controls">
+              <button class="up_btn">UP</button>
+              <div>3</div>
+              <button class="down_btn">down</button>
+            </div>
+          </section> -->
+        </div>
+        <section class="lift_container">
+          <!-- <section class="lift">
+            <div class="door_left"></div>
+            <div class="door_right"></div>
+          </section>
+          <section class="lift">
+            <div class="door_left"></div>
+            <div class="door_right"></div>
+          </section>
+          <section class="lift">
+            <div class="door_left"></div>
+            <div class="door_right"></div>
+          </section> -->
         </section>
-        <!-- Lift Simulation section -->
-        <section class="floor_lift_playground">
-
-        </section>
+      </section>
     </main>
     <script src="script.js"></script>
-</body>
+  </body>
 </html>
