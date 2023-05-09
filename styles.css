@@ -78,7 +78,7 @@ main {
 .lift {
   display: flex;
   width: 10%;
-  height: 8rem;
+  height: 128px;
   background-color: red;
 }
 .door_right, .door_left {
