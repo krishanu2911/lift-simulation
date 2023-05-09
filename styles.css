@@ -77,14 +77,40 @@ main {
 }
 .lift {
   display: flex;
-  width: 10%;
+  width: 100px;
   height: 128px;
   background-color: red;
+  overflow: hidden;
 }
 .door_right, .door_left {
-  width: 50%;
+  width: 50px;
   height: 8rem;
   background-color: black;
+}
+
+.closeOpen > .door_left {
+  /* transition: all 2s linear; */
+  animation-name: example;
+  animation-duration: 2.5s;
+  /* translate: -50px; */
+}
+.closeOpen > .door_right {
+  /* transition: all 2s linear; */
+  animation-name: example1;
+  animation-duration: 2.5s;
+  /* translate: 50px; */
+}
+
+@keyframes example {
+  0%   {translate: 0px;}
+  50%  {translate: -50px;}
+  100% {translate: 0px;}
+}
+
+@keyframes example1 {
+  0%   {translate: 0px;}
+  50%  {translate: 50px;}
+  100% {translate: 0px;}
 }
 .floor_switch_controls {
   display: flex;
