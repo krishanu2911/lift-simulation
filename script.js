@@ -3,13 +3,16 @@ const floorContainerWarp = document.getElementsByClassName(
   "floor_container_warp"
 );
 const liftContainer = document.getElementsByClassName("lift_container");
-let floorCount = 5;
-let liftCount = 4;
+let floorCount = 0;
+let liftCount = 0;
 
 floorLiftCountForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  createFloors(floorCount, liftCount);
+  floorCount = document.getElementById("floor_count").value;
+  liftCount = document.getElementById("lift_count").value;
+  createFloors(floorCount,liftCount);
 });
+const standbyFloorCall = []; 
 // ---------- Utils && States -----------------
 const floorHeight = 8; // rems
 
@@ -72,23 +75,22 @@ const createFloors = (floorNumbers, liftNumbers) => {
 
 const callingLift = async (btnEvent, floorNumber) => {
   let lifts = document.getElementsByClassName("lift");
+  let checkLiftPresentInFloor = [...lifts].filter(item => Number(item.dataset.currentFloor) === floorNumber);
+  if(checkLiftPresentInFloor.length !== 0){
+    await closeOpenDoor(checkLiftPresentInFloor[0]);
+    return
+  }
   let nearestLiftAvailable = [...lifts].reduce(
     (nearestLift, lift) => {
       if (lift.dataset.state === LIFT_STATE.ENGAGE) {
         return nearestLift;
       }
-      // console.log(lift.dataset.currentFloor, parseInt(floorNumber))
-      // if (lift.dataset.currentFloor === parseInt(floorNumber)) {
-      //   return { ...nearestLift, alreadyPresentLift: [lift] };
-      // }
       const distanceOfCurrentLift = Math.abs(
         floorNumber - Number(lift.dataset.currentFloor)
       );
       console.log(distanceOfCurrentLift);
       const pxDistance = floorNumber * (128 + 2);
       if (distanceOfCurrentLift < nearestLift.elementDistance) {
-        // console.log("hi")
-        // console.log(distanceOfCurrentLift);
         return {
           ...nearestLift,
           element: lift,
@@ -104,30 +106,27 @@ const callingLift = async (btnEvent, floorNumber) => {
       alreadyPresentLift: null,
     }
   );
-  console.log(nearestLiftAvailable.alreadyPresentLift)
-  // if (nearestLiftAvailable.alreadyPresentLift === null) {
-  //   await closeOpenDoor(nearestLiftAvailable.alreadyPresentLift[0]);
-  //   return;
-  // }
+  if(nearestLiftAvailable.element === null){
+    standbyFloorCall.push(floorNumber);
+    return
+  }
   nearestLiftAvailable.element.dataset.currentFloor = `${floorNumber}`;
   nearestLiftAvailable.element.dataset.state = LIFT_STATE.ENGAGE;
   LiftMovement(nearestLiftAvailable.element, floorNumber);
-  // nearestLiftAvailable.element.style.transform = `translateY(-${((floorNumber - 1) * (128+2))}px)`;
-  // nearestLiftAvailable.element.style.transition = `all ${3}s linear`;
-
-  // setTimeout(() => {
-  //   nearestLiftAvailable.element.dataset.state = LIFT_STATE.AVAILABLE;
-  // },3000)
 };
 
 const LiftMovement = async (lift, fl_no) => {
-  await closeOpenDoor(lift);
   lift.style.transform = `translateY(-${(fl_no - 1) * (128 + 2)}px)`;
   lift.style.transition = `all ${3}s linear`;
   return new Promise((res) => {
     setTimeout(async () => {
       await closeOpenDoor(lift);
-      lift.dataset.state = LIFT_STATE.AVAILABLE;
+      res();
+      if(standbyFloorCall.length === 0){
+        lift.dataset.state = LIFT_STATE.AVAILABLE;
+      }else {
+       await LiftMovement(lift,standbyFloorCall.shift())
+      }
     }, 3000);
   });
 };
