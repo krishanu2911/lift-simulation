@@ -10,9 +10,17 @@ floorLiftCountForm.addEventListener("submit", (e) => {
   e.preventDefault();
   floorCount = document.getElementById("floor_count").value;
   liftCount = document.getElementById("lift_count").value;
-  createFloors(floorCount,liftCount);
+  if (floorCount > 15 || liftCount > 7) {
+    confirm(
+      "Lift or floor count Limit exceeds Lift and floor must be less than 7 and 15 respectively"
+    );
+    return;
+  }
+  floorLiftCountForm.style.display = "none";
+  createFloors(floorCount, liftCount);
+  return;
 });
-const standbyFloorCall = []; 
+const standbyFloorCall = [];
 // ---------- Utils && States -----------------
 const floorHeight = 8; // rems
 
@@ -75,10 +83,12 @@ const createFloors = (floorNumbers, liftNumbers) => {
 
 const callingLift = async (btnEvent, floorNumber) => {
   let lifts = document.getElementsByClassName("lift");
-  let checkLiftPresentInFloor = [...lifts].filter(item => Number(item.dataset.currentFloor) === floorNumber);
-  if(checkLiftPresentInFloor.length !== 0){
+  let checkLiftPresentInFloor = [...lifts].filter(
+    (item) => Number(item.dataset.currentFloor) === floorNumber
+  );
+  if (checkLiftPresentInFloor.length !== 0) {
     await closeOpenDoor(checkLiftPresentInFloor[0]);
-    return
+    return;
   }
   let nearestLiftAvailable = [...lifts].reduce(
     (nearestLift, lift) => {
@@ -106,26 +116,28 @@ const callingLift = async (btnEvent, floorNumber) => {
       alreadyPresentLift: null,
     }
   );
-  if(nearestLiftAvailable.element === null){
+  if (nearestLiftAvailable.element === null) {
     standbyFloorCall.push(floorNumber);
-    return
+    return;
   }
+  // console.log(lifts)
   nearestLiftAvailable.element.dataset.currentFloor = `${floorNumber}`;
   nearestLiftAvailable.element.dataset.state = LIFT_STATE.ENGAGE;
   LiftMovement(nearestLiftAvailable.element, floorNumber);
 };
 
 const LiftMovement = async (lift, fl_no) => {
+  await closeOpenDoor(lift);
   lift.style.transform = `translateY(-${(fl_no - 1) * (128 + 2)}px)`;
   lift.style.transition = `all ${3}s linear`;
   return new Promise((res) => {
     setTimeout(async () => {
       await closeOpenDoor(lift);
       res();
-      if(standbyFloorCall.length === 0){
+      if (standbyFloorCall.length === 0) {
         lift.dataset.state = LIFT_STATE.AVAILABLE;
-      }else {
-       await LiftMovement(lift,standbyFloorCall.shift())
+      } else {
+        await LiftMovement(lift, standbyFloorCall.shift());
       }
     }, 3000);
   });
