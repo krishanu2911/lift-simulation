@@ -100,6 +100,10 @@ main {
   animation-duration: 2.5s;
   /* translate: 50px; */
 }
+#generate {
+  display: none;
+  margin: auto;
+}
 
 @keyframes example {
   0%   {translate: 0px;}

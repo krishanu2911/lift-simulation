@@ -2,10 +2,10 @@ const floorLiftCountForm = document.getElementById("floor_lift_count_form");
 const floorContainerWarp = document.getElementsByClassName(
   "floor_container_warp"
 );
+const liftGenerate = document.getElementById("generate");
 const liftContainer = document.getElementsByClassName("lift_container");
 let floorCount = 0;
 let liftCount = 0;
-
 floorLiftCountForm.addEventListener("submit", (e) => {
   e.preventDefault();
   floorCount = document.getElementById("floor_count").value;
@@ -17,8 +17,15 @@ floorLiftCountForm.addEventListener("submit", (e) => {
     return;
   }
   floorLiftCountForm.style.display = "none";
+  liftGenerate.style.display = "block";
   createFloors(floorCount, liftCount);
   return;
+});
+
+liftGenerate.addEventListener("click", (e) => {
+  e.preventDefault();
+  console.log("hello");
+  location.reload();
 });
 const standbyFloorCall = [];
 // ---------- Utils && States -----------------
@@ -42,7 +49,6 @@ const createFloors = (floorNumbers, liftNumbers) => {
     const upBtn = document.createElement("button");
     upBtn.innerText = "Up";
     upBtn.classList.add("up_btn");
-    upBtn.onclick = (e) => callingLift(e, i);
 
     const floorNumber = document.createElement("div");
     floorNumber.innerText = `${i}`;
@@ -50,7 +56,8 @@ const createFloors = (floorNumbers, liftNumbers) => {
     const downBtn = document.createElement("button");
     downBtn.innerText = "Down";
     downBtn.classList.add("down_btn");
-    downBtn.onclick = (e) => callingLift(e, i);
+    upBtn.onclick = (e) => callingLift(upBtn, i, downBtn);
+    downBtn.onclick = (e) => callingLift(downBtn, i, upBtn);
 
     const floorSwitchControls = document.createElement("div");
     floorSwitchControls.classList.add("floor_switch_controls");
@@ -81,7 +88,9 @@ const createFloors = (floorNumbers, liftNumbers) => {
 
 // ---------- Lift Call -------------------
 
-const callingLift = async (btnEvent, floorNumber) => {
+const callingLift = async (btnEvent, floorNumber, anotherbtn) => {
+  console.log("is disabled or not");
+  console.log(anotherbtn)
   let lifts = document.getElementsByClassName("lift");
   let checkLiftPresentInFloor = [...lifts].filter(
     (item) => Number(item.dataset.currentFloor) === floorNumber
@@ -98,7 +107,6 @@ const callingLift = async (btnEvent, floorNumber) => {
       const distanceOfCurrentLift = Math.abs(
         floorNumber - Number(lift.dataset.currentFloor)
       );
-      console.log(distanceOfCurrentLift);
       const pxDistance = floorNumber * (128 + 2);
       if (distanceOfCurrentLift < nearestLift.elementDistance) {
         return {
@@ -116,30 +124,57 @@ const callingLift = async (btnEvent, floorNumber) => {
       alreadyPresentLift: null,
     }
   );
+  console.log(nearestLiftAvailable.element)
   if (nearestLiftAvailable.element === null) {
-    standbyFloorCall.push(floorNumber);
+    if (!standbyFloorCall.includes(Number(floorNumber))) {
+      standbyFloorCall.push(Number(floorNumber));
+    }
     return;
   }
-  // console.log(lifts)
+  let liftTimeDuration =
+    Math.abs(nearestLiftAvailable.element.dataset.currentFloor - floorNumber) *
+    2;
   nearestLiftAvailable.element.dataset.currentFloor = `${floorNumber}`;
   nearestLiftAvailable.element.dataset.state = LIFT_STATE.ENGAGE;
-  LiftMovement(nearestLiftAvailable.element, floorNumber);
+  LiftMovement(
+    nearestLiftAvailable.element,
+    floorNumber,
+    liftTimeDuration,
+    btnEvent,
+    anotherbtn
+  );
 };
 
-const LiftMovement = async (lift, fl_no) => {
+const LiftMovement = async (lift, fl_no, time, btnEvent, anotherbtn) => {
+  if(btnEvent && anotherbtn) {
+    btnEvent.disabled = true;
+  anotherbtn.disabled = true;
+  }
+  
+  console.log("disabled the btn");
   await closeOpenDoor(lift);
   lift.style.transform = `translateY(-${(fl_no - 1) * (128 + 2)}px)`;
-  lift.style.transition = `all ${3}s linear`;
+  lift.style.transition = `all ${time}s linear`;
   return new Promise((res) => {
     setTimeout(async () => {
       await closeOpenDoor(lift);
       res();
+      lift.dataset.currentFloor = `${fl_no}`;
+      if(btnEvent && anotherbtn) {
+        btnEvent.disabled = false;
+      anotherbtn.disabled = false;
+      }
+      // lift.dataset.state = LIFT_STATE.AVAILABLE;
       if (standbyFloorCall.length === 0) {
         lift.dataset.state = LIFT_STATE.AVAILABLE;
       } else {
-        await LiftMovement(lift, standbyFloorCall.shift());
+        let standbyLiftFloor = standbyFloorCall.shift();
+        let liftTime =
+          Math.abs(lift.dataset.currentFloor - standbyLiftFloor) * 2;
+        console.log(standbyFloorCall);
+        await LiftMovement(lift, standbyLiftFloor, liftTime);
       }
-    }, 3000);
+    }, time * 1000);
   });
 };
 
