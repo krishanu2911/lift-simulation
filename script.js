@@ -89,13 +89,12 @@ const createFloors = (floorNumbers, liftNumbers) => {
 // ---------- Lift Call -------------------
 
 const callingLift = async (btnEvent, floorNumber, anotherbtn) => {
-  console.log("is disabled or not");
-  console.log(anotherbtn)
   let lifts = document.getElementsByClassName("lift");
   let checkLiftPresentInFloor = [...lifts].filter(
-    (item) => Number(item.dataset.currentFloor) === floorNumber
+    (item) => Number(item.dataset.currentFloor) === Number(floorNumber)
   );
   if (checkLiftPresentInFloor.length !== 0) {
+    console.log("hello same floor")
     await closeOpenDoor(checkLiftPresentInFloor[0]);
     return;
   }

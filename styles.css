@@ -79,7 +79,7 @@ main {
   display: flex;
   width: 100px;
   height: 128px;
-  background-color: red;
+  background-color: #60a5fa;
   overflow: hidden;
 }
 .door_right, .door_left {
