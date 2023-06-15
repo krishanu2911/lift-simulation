@@ -78,10 +78,11 @@ main {
 .lift {
   display: flex;
   width: 90px;
-  height: 128px;
+  /* height: 128px; */
   background-color: #60a5fa;
-  margin-left: 10px;
-  margin-right: 10px;
+  aspect-ratio: 3 / 4;
+  margin-left: 2px;
+  margin-right: 2px;
   overflow: hidden;
 }
 .door_right, .door_left {
