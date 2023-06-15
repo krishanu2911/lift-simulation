@@ -185,6 +185,6 @@ const closeOpenDoor = (lift) => {
     setTimeout(() => {
       lift.classList.remove("closeOpen");
       res();
-    }, 2500);
+    }, 5000);
   });
 };
