@@ -94,13 +94,13 @@ main {
 .closeOpen > .door_left {
   /* transition: all 2s linear; */
   animation-name: example;
-  animation-duration: 2.5s;
+  animation-duration: 5s;
   /* translate: -50px; */
 }
 .closeOpen > .door_right {
   /* transition: all 2s linear; */
   animation-name: example1;
-  animation-duration: 2.5s;
+  animation-duration: 5s;
   /* translate: 50px; */
 }
 #generate {
