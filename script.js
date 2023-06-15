@@ -100,7 +100,6 @@ const callingLift = async (btnEvent, floorNumber, anotherbtn) => {
     (item) => Number(item.dataset.currentFloor) === Number(floorNumber)
   );
   if (checkLiftPresentInFloor.length !== 0) {
-    console.log("hello same floor")
     await closeOpenDoor(checkLiftPresentInFloor[0]);
     return;
   }
@@ -155,9 +154,6 @@ const LiftMovement = async (lift, fl_no, time, btnEvent, anotherbtn) => {
     btnEvent.disabled = true;
   anotherbtn.disabled = true;
   }
-  
-  console.log("disabled the btn");
-  await closeOpenDoor(lift);
   lift.style.transform = `translateY(-${(fl_no - 1) * (128 + 2)}px)`;
   lift.style.transition = `all ${time}s linear`;
   return new Promise((res) => {
