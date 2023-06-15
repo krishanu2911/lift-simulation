@@ -10,9 +10,15 @@ floorLiftCountForm.addEventListener("submit", (e) => {
   e.preventDefault();
   floorCount = document.getElementById("floor_count").value;
   liftCount = document.getElementById("lift_count").value;
-  if (floorCount > 15 || liftCount > 7) {
+  if (floorCount > 15 || liftCount > 7 ) {
     confirm(
       "Lift or floor count Limit exceeds Lift and floor must be less than 7 and 15 respectively"
+    );
+    return;
+  }
+  if(floorCount <= 0 || liftCount <= 0) {
+    confirm(
+      "Lift or floor count must be positive value and greater than zero"
     );
     return;
   }
